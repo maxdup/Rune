@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import struct
+import schema
+
+
 class header:
 
     def __init__(self, file):
@@ -8,6 +11,7 @@ class header:
         self.offset = 16 * (self.nb_schemas + 1)
         self.version = 1
         self.anwser = 42
+        self.schemas = []
 
     def write(self, db_file):
         db_file.seek(0)
@@ -15,6 +19,17 @@ class header:
         db_file.write(struct.pack('i', self.nb_schemas))
         db_file.write(struct.pack('i', self.version))
         db_file.write(struct.pack('i', self.anwser))
+
+    def read(self, db_file):
+        db_file.seek(0)
+        self.offset = struct.unpack('i', db.file.read(4))
+        self.nb_schemas = struct.unpack('i', db.file.read(4))
+        self.version = struct.unpack('i', db.file.read(4))
+        self.anwser = struct.unpack('i', db.file.read(4))
+        for schema in nb_schemas:
+            schm = schema({})
+            schm.read(db_file)
+            self.schemas.append(schm)
 
     def add_schema(self, schema):
         schema.schemaID = self.nb_schemas

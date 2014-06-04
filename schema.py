@@ -16,10 +16,17 @@ class schema:
 
     def write(self, db_file):
         db_file.seek(16 * (self.schemaID + 1))
-        db_file.write(struct.pack('i', self.rune_length))
         db_file.write(struct.pack('i', self.offset))
+        db_file.write(struct.pack('i', self.rune_length))
         db_file.write(struct.pack('i', self.flag1))
         db_file.write(struct.pack('i', self.flag2))
+
+    def read(self, db_file):
+        self.offset = struct.unpack('i', db_file.read(4))
+        self.rune_length = struct.unpack('i', db_file.read(4))
+        self.flag1 = struct.unpack('i', db_file.read(4))
+        self.flag2 = struct.unpack('i', db_file.read(4))
+
 
     def flag_factory(self):
         for x, fields in enumerate(self.schema):
