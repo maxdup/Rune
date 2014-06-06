@@ -4,15 +4,15 @@ import struct
 class schema:
 
     '''schemas are capped to 32 fields for now'''
+    types = ['int', 'uint', 'ref', 'str']
 
-    def __init__(self, schema):
-        self.schema = schema
-        self.schemaID = 0  # todo autoincrement
+    def __init__(self, index):
+        self.schema = []
+        self.schemaID = index
         self.rune_length = len(self.schema)
         self.offset = 0  # todo, offset of this type in the file
         self.flag1 = 0  # these flags account for 32 fields
         self.flag2 = 0
-        self.flag_factory()
 
     def write(self, db_file):
         db_file.seek(16 * (self.schemaID + 1))
@@ -27,8 +27,17 @@ class schema:
         self.flag1 = struct.unpack('i', db_file.read(4))[0]
         self.flag2 = struct.unpack('i', db_file.read(4))[0]
 
+    def addfield(field):
+        #todo, add possibility to add arrays of field at once
+        if field in types:
+            self.schema.append(field)
+            self.rune_length += 1
+            self.flag_factory()
+
 
     def flag_factory(self):
+        self.flag1 = 0
+        self.flag2 = 0
         for x, fields in enumerate(self.schema):
             value = 2 ** x
             if fields == 'uint':

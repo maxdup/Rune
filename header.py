@@ -28,8 +28,8 @@ class header:
         self.anwser = struct.unpack('i', self.file.read(4))[0]
 
         for x in range(0, self.nb_schemas):
-            schm = schema([])
-            schm.read(db_file)
+            schm = schema(len(self.schemas))
+            schm.read(self.file)
             self.schemas.append(schm)
 
     def add_schema(self, schema):
