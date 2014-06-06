@@ -22,10 +22,10 @@ class schema:
         db_file.write(struct.pack('i', self.flag2))
 
     def read(self, db_file):
-        self.offset = struct.unpack('i', db_file.read(4))
-        self.rune_length = struct.unpack('i', db_file.read(4))
-        self.flag1 = struct.unpack('i', db_file.read(4))
-        self.flag2 = struct.unpack('i', db_file.read(4))
+        self.offset = struct.unpack('i', db_file.read(4))[0]
+        self.rune_length = struct.unpack('i', db_file.read(4))[0]
+        self.flag1 = struct.unpack('i', db_file.read(4))[0]
+        self.flag2 = struct.unpack('i', db_file.read(4))[0]
 
 
     def flag_factory(self):
@@ -52,3 +52,15 @@ class schema:
             return 'uint'
         return 'int'
 
+    def getSchema(self):
+        schm = []
+        for i in range(0, self.rune_length):
+           schm.append(self.typeOf(i))
+        return schm
+
+    def __str__(self):
+        output = "schema id: " + str(self.schemaID)
+        output += "\n\toffset: " + str(self.offset)
+        output += "\n\tlength: " + str(self.rune_length)
+        output += "\n\tschema: " + str(self.getSchema())
+        return output
