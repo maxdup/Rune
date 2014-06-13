@@ -5,9 +5,9 @@ import os
 
 class database:
 
-    def __init__(self):
+    def __init__(self, filename):
         self.schemas = []
-        if os.path.isfile('db.rune'):
+        if os.path.isfile(filename):
             with open('db.rune', mode='rb') as db_file:
                 self.header = header(db_file)
                 self.header.read()

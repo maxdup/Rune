@@ -35,6 +35,7 @@ class header:
     def add_schema(self, schema):
         schema.schemaID = self.nb_schemas
         self.nb_schemas += 1
+        self.offset += 16
         self.file.seek(4)
         self.file.write(struct.pack('i', self.nb_schemas))
 
