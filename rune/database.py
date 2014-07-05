@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from header import header
+from rune.header import header
 import os
 
 
@@ -11,10 +11,9 @@ class database:
             with open('db.rune', mode='rb') as db_file:
                 self.header = header(db_file)
                 self.header.read()
-                print (str(self.header))
                 self.header.print_schemas()
         else:
-            self.file = open('db.rune', 'wb')
+            self.file = open(filename, 'wb')
             self.header = header(self.file)
             self.header.write()
 

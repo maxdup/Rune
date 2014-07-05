@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import struct
-from schema import schema
+from rune.schema import schema
 
 
 class header:
