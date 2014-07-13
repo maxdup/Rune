@@ -1,8 +1,8 @@
-from rune.database import database
-from rune.schema import schema
+from rune.database import Database
+from rune.schema import Schema
 
-db = database('db.rune')
+db = Database('db.rune')
 
-schema = schema(1,['int','uint','obj','str'])
+schema = Schema(1, ['int', 'uint', 'obj', 'str'])
 
-db.add_schema(schema)
+db.add_schema(Schema)

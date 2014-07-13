@@ -1,40 +1,41 @@
 # -*- coding: utf-8 -*-
-from rune.header import header
-from rune.schema import schema
 import struct
 import os
 
+from rune.header import Header
 
-class database:
+from rune.schema import Schema
+
+
+class Database:
 
     def __init__(self, filename):
         self.schemas = []
         if os.path.isfile(filename):
             self.file = open(filename, mode='rb')
-            self.header = header(self.file)
-            self.header.read()
+            self.header = Header(self.file)
 
             for x in range(0, self.header.nb_schemas):
-                self.schemas.append(read_schema(x))
+                self.schemas.append(self.read_schema(x))
         else:
             self.file = open(filename, 'wb')
-            self.header = header(self.file)
+            self.header = Header(self.file)
             self.header.write()
 
-    def add_schema(self, schema):
-        self.schemas.append(schema)
-        self.header.add_schema(schema)
+    def add_schema(self, insert_schema):
+        self.schemas.append(insert_schema)
+        self.header.add_schema(insert_schema)
         #schema.write(self.file)
-        self.write_schema(schema)
+        self.write_schema(insert_schema)
 
     def read_schema(self, index):
-        schema = schema(index)
+        found_schema = Schema(index)
         self.file.seek(16 * (index + 1))
-        schema.offset = struct.unpack('i', self.file.read(4))[0]
-        schema.length = struct.unpack('i', self.file.read(4))[0]
-        schema.flag1 = struct.unpack('i', self.file.read(4))[0]
-        schema.flag2 = struct.unpack('i', self.file.read(4))[0]
-        return schema
+        found_schema.offset = struct.unpack('i', self.file.read(4))[0]
+        found_schema.length = struct.unpack('i', self.file.read(4))[0]
+        found_schema.flag1 = struct.unpack('i', self.file.read(4))[0]
+        found_schema.flag2 = struct.unpack('i', self.file.read(4))[0]
+        return Schema
 
     def write_schema(self, schema):
         self.file.seek(16 * (schema.schemaID + 1))
