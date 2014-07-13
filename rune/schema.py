@@ -34,7 +34,6 @@ class schema:
             self.rune_length += 1
             self.flag_factory()
 
-
     def flag_factory(self):
         self.flag1 = 0
         self.flag2 = 0

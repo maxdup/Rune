@@ -28,6 +28,7 @@ class database:
 
             self.header = header(self.file)
             self.header.write()
+
             schema1.write(self.file)
             schema2.write(self.file)
             schema3.write(self.file)
@@ -37,3 +38,11 @@ class database:
         self.schemas.append(schema)
         self.header.add_schema(schema)
         schema.write(self.file)
+
+    def read_schema(self, index):
+        schema = schema(index)
+        self.seek(16 * (index + 1))
+        schema.offset = struct.unpack('i', db_file.read(4))[0]
+        schema.rune_length = struct.unpack('i',db.file.read(4))[0]
+        schema.flag1 = struct.unpack('i', db_file.read(4))[0]
+        schema.flag2 = struct.unpack('i', db_file.read(4))[0]
