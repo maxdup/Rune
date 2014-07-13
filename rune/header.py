@@ -38,11 +38,6 @@ class header:
         self.offset += 16
         self.file.seek(4)
         self.file.write(struct.pack('i', self.nb_schemas))
-
-    def print_schemas(self):
-        for schema in self.schemas:
-            print(str(schema))
-        return
  
     def __str__(self):
         output = 'schema count: ' + str(self.nb_schemas)
