@@ -9,13 +9,16 @@ class schema:
     def __init__(self, index = None, schema = []):
         self.schema = schema
         self.schemaID = index
-        self.rune_length = len(self.schema)
+        self.length = len(self.schema)
         self.offset = 0  # todo, offset of this type in the file
         self.flag1 = 0  # these flags account for 32 fields
         self.flag2 = 0
+        if self.schema:
+            self.flag_factory()
+        print(self)
 
     def write(self, db_file):
-        if self.index:
+        if self.schemaID:
             db_file.seek(16 * (self.schemaID + 1))
             db_file.write(struct.pack('i', self.offset))
             db_file.write(struct.pack('i', self.rune_length))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from rune.header import header
 from rune.schema import schema
+import struct
 import os
 
 
@@ -23,7 +24,8 @@ class database:
     def add_schema(self, schema):
         self.schemas.append(schema)
         self.header.add_schema(schema)
-        schema.write(self.file)
+        #schema.write(self.file)
+        self.write_schema(schema)
 
     def read_schema(self, index):
         schema = schema(index)
@@ -35,12 +37,8 @@ class database:
         return schema
 
     def write_schema(self, schema):
-        if not schema.schemaID:
-            print('todo')
-            #todo implement autoincrement
-
         self.file.seek(16 * (schema.schemaID + 1))
         self.file.write(struct.pack('i', schema.offset))
-        self.file.write(struct.pack('i', schema.rune_length))
+        self.file.write(struct.pack('i', schema.length))
         self.file.write(struct.pack('i', schema.flag1))
         self.file.write(struct.pack('i', schema.flag2))
