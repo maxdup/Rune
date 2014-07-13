@@ -6,8 +6,8 @@ class schema:
     '''schemas are capped to 32 fields for now'''
     types = ['int', 'uint', 'ref', 'str']
 
-    def __init__(self, index):
-        self.schema = []
+    def __init__(self, index = None, schema = []):
+        self.schema = schema
         self.schemaID = index
         self.rune_length = len(self.schema)
         self.offset = 0  # todo, offset of this type in the file
@@ -15,11 +15,12 @@ class schema:
         self.flag2 = 0
 
     def write(self, db_file):
-        db_file.seek(16 * (self.schemaID + 1))
-        db_file.write(struct.pack('i', self.offset))
-        db_file.write(struct.pack('i', self.rune_length))
-        db_file.write(struct.pack('i', self.flag1))
-        db_file.write(struct.pack('i', self.flag2))
+        if self.index:
+            db_file.seek(16 * (self.schemaID + 1))
+            db_file.write(struct.pack('i', self.offset))
+            db_file.write(struct.pack('i', self.rune_length))
+            db_file.write(struct.pack('i', self.flag1))
+            db_file.write(struct.pack('i', self.flag2))
 
     def read(self, db_file):
         self.offset = struct.unpack('i', db_file.read(4))[0]
@@ -31,7 +32,7 @@ class schema:
         #todo, add possibility to add arrays of field at once
         if field in types:
             self.schema.append(field)
-            self.rune_length += 1
+            self.length += 1
             self.flag_factory()
 
     def flag_factory(self):
@@ -62,18 +63,18 @@ class schema:
 
     def getSchema(self):
         schm = []
-        for i in range(0, self.rune_length):
+        for i in range(0, self.length):
            schm.append(self.typeOf(i))
         return schm
 
     def setSchema(self, schema):
         self.schema = schema
         self.flag_factory()
-        self.rune_length = len(self.schema)
+        self.length = len(self.schema)
 
     def __str__(self):
         output = "schema id: " + str(self.schemaID)
         output += "\n\toffset: " + str(self.offset)
-        output += "\n\tlength: " + str(self.rune_length)
+        output += "\n\tlength: " + str(self.length)
         output += "\n\tschema: " + str(self.getSchema())
         return output

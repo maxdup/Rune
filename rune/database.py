@@ -12,7 +12,9 @@ class database:
             self.file = open(filename, mode='rb')
             self.header = header(self.file)
             self.header.read()
-            self.header.print_schemas()
+
+            for x in range(0, self.header.nb_schemas):
+                self.schemas.append(read_schema(x))
         else:
             self.file = open(filename, 'wb')
             self.header = header(self.file)
@@ -25,8 +27,20 @@ class database:
 
     def read_schema(self, index):
         schema = schema(index)
-        self.seek(16 * (index + 1))
-        schema.offset = struct.unpack('i', db_file.read(4))[0]
-        schema.rune_length = struct.unpack('i',db.file.read(4))[0]
-        schema.flag1 = struct.unpack('i', db_file.read(4))[0]
-        schema.flag2 = struct.unpack('i', db_file.read(4))[0]
+        self.file.seek(16 * (index + 1))
+        schema.offset = struct.unpack('i', self.file.read(4))[0]
+        schema.length = struct.unpack('i', self.file.read(4))[0]
+        schema.flag1 = struct.unpack('i', self.file.read(4))[0]
+        schema.flag2 = struct.unpack('i', self.file.read(4))[0]
+        return schema
+
+    def write_schema(self, schema):
+        if not schema.schemaID:
+            print('todo')
+            #todo implement autoincrement
+
+        self.file.seek(16 * (schema.schemaID + 1))
+        self.file.write(struct.pack('i', schema.offset))
+        self.file.write(struct.pack('i', schema.rune_length))
+        self.file.write(struct.pack('i', schema.flag1))
+        self.file.write(struct.pack('i', schema.flag2))
