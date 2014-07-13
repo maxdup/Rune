@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rune.header import header
+from rune.schema import schema
 import os
 
 
@@ -13,9 +14,24 @@ class database:
                 self.header.read()
                 self.header.print_schemas()
         else:
+            schema1 = schema(1)
+            schema2 = schema(2)
+            schema3 = schema(3)
+            schema4 = schema(4)
+
+            schema1.setSchema(['int', 'uint', 'str', 'ref'])
+            schema2.setSchema(['int', 'ref'])
+            schema3.setSchema(['str', 'ref', 'ref'])
+            schema4.setSchema(['int', 'uint', 'str', 'ref', ' int', 'ref', 'str', 'ref'])
+
             self.file = open(filename, 'wb')
+
             self.header = header(self.file)
             self.header.write()
+            schema1.write(self.file)
+            schema2.write(self.file)
+            schema3.write(self.file)
+            schema4.write(self.file)
 
     def add_schema(self, schema):
         self.schemas.append(schema)

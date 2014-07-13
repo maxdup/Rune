@@ -67,6 +67,11 @@ class schema:
            schm.append(self.typeOf(i))
         return schm
 
+    def setSchema(self, schema):
+        self.schema = schema
+        self.flag_factory()
+        self.rune_length = len(self.schema)
+
     def __str__(self):
         output = "schema id: " + str(self.schemaID)
         output += "\n\toffset: " + str(self.offset)
