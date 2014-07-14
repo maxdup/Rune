@@ -59,6 +59,6 @@ class Schema:
         output = "schema id: " + str(self.schemaID)
         output += "\n\toffset: " + str(self.offset)
         output += "\n\tlength: " + str(self.length)
-        output += "\n\tschema: " + str(self.getSchema())
+        output += "\n\tschema: " + str(self.get_schema())
         output += "\n\tflag: " + str(self.flag1) + ' ' +str(self.flag2)
         return output

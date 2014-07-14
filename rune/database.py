@@ -11,15 +11,20 @@ class Database:
     def __init__(self, filename):
         self.schemas = []
         if os.path.isfile(filename):
-            self.file = open(filename, mode='rb')
-            self.header = Header(self.file)
+            with open(filename, 'rb') as db_file:
+                self.header = Header()
+                self.header.read(db_file)
 
-            for x in range(0, self.header.nb_schemas):
-                self.schemas.append(self.read_schema(x))
+                for x in range(0, self.header.nb_schemas):
+                    self.schemas.append(self.read_schema(x))
+
+            self.file = open(filename, mode='wb')
+            self.header.file = self.file
+
         else:
             self.file = open(filename, 'wb')
-            self.header = Header(self.file)
-            self.header.write()
+            self.header = Header()
+            self.header.write(self.file)
 
     def add_schema(self, insert_schema):
         self.schemas.append(insert_schema)
