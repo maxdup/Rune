@@ -26,12 +26,6 @@ class header:
         self.nb_schemas = struct.unpack('i', self.file.read(4))[0]
         self.version = struct.unpack('i', self.file.read(4))[0]
         self.anwser = struct.unpack('i', self.file.read(4))[0]
-
-        for x in range(0, self.nb_schemas):
-            schm = schema(len(self.schemas))
-            schm.read(self.file)
-            self.schemas.append(schm)
-
     def add_schema(self, schema):
         schema.schemaID = self.nb_schemas
         self.nb_schemas += 1

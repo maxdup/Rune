@@ -15,7 +15,7 @@ class database:
             self.header.read()
 
             for x in range(0, self.header.nb_schemas):
-                self.schemas.append(read_schema(x))
+                self.schemas.append(self.read_schema(x))
         else:
             self.file = open(filename, 'wb')
             self.header = header(self.file)
@@ -24,7 +24,7 @@ class database:
     def add_schema(self, schema):
         self.schemas.append(schema)
         self.header.add_schema(schema)
-        #schema.write(self.file)
+        self.header.write()
         self.write_schema(schema)
 
     def read_schema(self, index):

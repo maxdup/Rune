@@ -6,28 +6,27 @@ class schema:
     '''schemas are capped to 32 fields for now'''
     types = ['int', 'uint', 'ref', 'str']
 
-    def __init__(self, index = None, schema = []):
+    def __init__(self, index=None, schema=[]):
         self.schema = schema
         self.schemaID = index
         self.length = len(self.schema)
         self.offset = 0  # todo, offset of this type in the file
         self.flag1 = 0  # these flags account for 32 fields
         self.flag2 = 0
-        if self.schema:
-            self.flag_factory()
+        self.flag_factory()
         print(self)
 
     def write(self, db_file):
         if self.schemaID:
             db_file.seek(16 * (self.schemaID + 1))
             db_file.write(struct.pack('i', self.offset))
-            db_file.write(struct.pack('i', self.rune_length))
+            db_file.write(struct.pack('i', len(self.schema)))
             db_file.write(struct.pack('i', self.flag1))
             db_file.write(struct.pack('i', self.flag2))
 
     def read(self, db_file):
         self.offset = struct.unpack('i', db_file.read(4))[0]
-        self.rune_length = struct.unpack('i', db_file.read(4))[0]
+        self.lenght = struct.unpack('i', db_file.read(4))[0]
         self.flag1 = struct.unpack('i', db_file.read(4))[0]
         self.flag2 = struct.unpack('i', db_file.read(4))[0]
 
@@ -53,8 +52,8 @@ class schema:
 
     def typeOf(self, index):
         position = 2 ** index
-        flag1 = self.flag1 / position >= 1
-        flag2 = self.flag2 / position >= 1
+        flag1 = ((self.flag1 % (2 ** (index + 1))) / position) >= 1
+        flag2 = ((self.flag2 % (2 ** (index + 1))) / position) >= 1
         if flag1:
             if flag2:
                 return 'str'
@@ -80,4 +79,5 @@ class schema:
         output += "\n\toffset: " + str(self.offset)
         output += "\n\tlength: " + str(self.length)
         output += "\n\tschema: " + str(self.getSchema())
+        output += "\n\tflag: " + str(self.flag1) + ' ' +str(self.flag2)
         return output
