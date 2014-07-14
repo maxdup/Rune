@@ -1,9 +1,4 @@
-import struct
-
-
-class schema:
-
-    '''schemas are capped to 32 fields for now'''
+class Schema:
     types = ['int', 'uint', 'ref', 'str']
 
     def __init__(self, index=None, schema=[]):
@@ -13,26 +8,12 @@ class schema:
         self.offset = 0  # todo, offset of this type in the file
         self.flag1 = 0  # these flags account for 32 fields
         self.flag2 = 0
-        self.flag_factory()
-        print(self)
+        if self.schema:
+            self.flag_factory()
 
-    def write(self, db_file):
-        if self.schemaID:
-            db_file.seek(16 * (self.schemaID + 1))
-            db_file.write(struct.pack('i', self.offset))
-            db_file.write(struct.pack('i', len(self.schema)))
-            db_file.write(struct.pack('i', self.flag1))
-            db_file.write(struct.pack('i', self.flag2))
-
-    def read(self, db_file):
-        self.offset = struct.unpack('i', db_file.read(4))[0]
-        self.lenght = struct.unpack('i', db_file.read(4))[0]
-        self.flag1 = struct.unpack('i', db_file.read(4))[0]
-        self.flag2 = struct.unpack('i', db_file.read(4))[0]
-
-    def addfield(field):
-        #todo, add possibility to add arrays of field at once
-        if field in types:
+    def addfield(self, field):
+        # todo, add possibility to add arrays of field at once
+        if field in self.types:
             self.schema.append(field)
             self.length += 1
             self.flag_factory()
@@ -50,7 +31,7 @@ class schema:
                 self.flag1 += value
                 self.flag2 += value
 
-    def typeOf(self, index):
+    def type_of(self, index):
         position = 2 ** index
         flag1 = ((self.flag1 % (2 ** (index + 1))) / position) >= 1
         flag2 = ((self.flag2 % (2 ** (index + 1))) / position) >= 1
@@ -63,13 +44,13 @@ class schema:
             return 'uint'
         return 'int'
 
-    def getSchema(self):
-        schm = []
+    def get_schema(self):
+        schema = []
         for i in range(0, self.length):
-           schm.append(self.typeOf(i))
-        return schm
+            schema.append(self.type_of(i))
+        return schema
 
-    def setSchema(self, schema):
+    def set_schema(self, schema):
         self.schema = schema
         self.flag_factory()
         self.length = len(self.schema)

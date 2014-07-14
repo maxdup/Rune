@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 import struct
-from rune.schema import schema
 
 
-class header:
+class Header:
 
     def __init__(self, file):
         self.file = file
         self.nb_schemas = 0
         self.offset = 16 * (self.nb_schemas + 1)
         self.version = 1
-        self.anwser = 42
+        self.answer = 42
         self.schemas = []
 
     def write(self):
@@ -18,7 +17,7 @@ class header:
         self.file.write(struct.pack('i', self.offset))
         self.file.write(struct.pack('i', self.nb_schemas))
         self.file.write(struct.pack('i', self.version))
-        self.file.write(struct.pack('i', self.anwser))
+        self.file.write(struct.pack('i', self.answer))
 
     def read(self):
         self.file.seek(0)
@@ -37,5 +36,5 @@ class header:
         output = 'schema count: ' + str(self.nb_schemas)
         output += '\nfile offset: ' + str(self.offset)
         output += '\ndb version: ' + str(self.version)
-        output += '\nanwser: ' + str(self.anwser)
+        output += '\nanswer: ' + str(self.answer)
         return output
